@@ -1,0 +1,25 @@
+{
+  "name": "phone-register",
+  "version": "1.0.0",
+  "description": "szabo mate phone register",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mate3241/phone-register.git"
+  },
+  "author": "mate szabo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mate3241/phone-register/issues"
+  },
+  "homepage": "https://github.com/mate3241/phone-register#readme",
+  "dependencies": {
+    "knex": "^0.20.13",
+    "mysql": "^2.18.1",
+    "readline-sync": "^1.4.10",
+    "table": "^5.4.6"
+  }
+}
