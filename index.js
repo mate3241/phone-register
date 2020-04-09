@@ -1,5 +1,5 @@
 const readlineSync = require('readline-sync');
-const table = require('table');
+const { table } = require('table');
 const knex = require('knex')({
   client: 'mysql',
   connection: {
@@ -11,45 +11,59 @@ const knex = require('knex')({
 });
 
 const selectAll = async () => {
+  let data = [];
   await knex.from('numbers').select()
     .then(rows => {
       for (const row of rows) {
-        console.log(row.phoneNumber, row.firstName, row.lastName);
+        data[0] = Object.keys(row);
+        data.push([row.phoneNumber, row.firstName, row.lastName]);
       }
     });
+  console.log(table(data));
 };
 
 const numberByName = async () => {
+  let data = [];
   const firstName = readlineSync.question('First name of person? ');
   const lastName = readlineSync.question('Last name of person? ');
-  const returnValue = await knex.from('numbers').select('*').where('firstName', firstName).andWhere('lastName', lastName);
+  await knex.from('numbers').select().where('firstName', firstName).andWhere('lastName', lastName)
+    .then(rows => {
+      for (const row of rows) {
+        data[0] = Object.keys(row);
+        data.push([row.phoneNumber, row.firstName, row.lastName]);
+      }
+    });
+  console.log(table(data));
 };
 
 const newNumber = async () => {
   const firstName = readlineSync.question('First name of person? ');
   const lastName = readlineSync.question('Last name of person? ');
   const number = readlineSync.question('Number to add? ');
-  await knex('numbers').insert({ firstName: firstName, lastName: lastName, phoneNumber: number });
+  await knex('numbers').insert({ firstName: firstName, lastName: lastName, phoneNumber: number }); ű
+  console.log('Added');
 };
 
 const modifyNumber = async () => {
   const originalNumber = readlineSync.question('Number to modify? ');
   const newNumber = readlineSync.question('New number? ');
   await knex('numbers').where({ phoneNumber: originalNumber }).update({ phoneNumber: newNumber });
+  console.log('Modified');
 };
 
 const deleteNumber = async () => {
   const numberToDelete = readlineSync.question('Number to delete? ');
   await knex('numbers').where({ phoneNumber: numberToDelete }).del();
+  console.log('Deleted');
 };
 
 const menu = async () => {
   const options = ['List numbers', 'Search by name', 'Insert number', 'Modify Number', 'Delete number'];
   const queries = [selectAll, numberByName, newNumber, modifyNumber, deleteNumber];
-  const prompt = 'Válassz a menüpontok közül:';
-  const index = readlineSync.keyInSelect(options, prompt, { cancel: 'Kilépés' });
+  const prompt = 'Please choose:';
+  const index = readlineSync.keyInSelect(options, prompt, { cancel: 'Quit' });
   if (index === -1) {
-    console.log('Viszlát!');
+    console.log('Goodbye!');
     process.exit();
   } else {
     await queries[index]();
