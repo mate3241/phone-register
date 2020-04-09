@@ -11,7 +11,7 @@ const knex = require('knex')({
 });
 
 const selectAll = async () => {
-  let data = [];
+  const data = [];
   await knex.from('numbers').select()
     .then(rows => {
       for (const row of rows) {
@@ -23,7 +23,7 @@ const selectAll = async () => {
 };
 
 const numberByName = async () => {
-  let data = [];
+  const data = [];
   const firstName = readlineSync.question('First name of person? ');
   const lastName = readlineSync.question('Last name of person? ');
   await knex.from('numbers').select().where('firstName', firstName).andWhere('lastName', lastName)
@@ -40,7 +40,7 @@ const newNumber = async () => {
   const firstName = readlineSync.question('First name of person? ');
   const lastName = readlineSync.question('Last name of person? ');
   const number = readlineSync.question('Number to add? ');
-  await knex('numbers').insert({ firstName: firstName, lastName: lastName, phoneNumber: number }); ű
+  await knex('numbers').insert({ firstName: firstName, lastName: lastName, phoneNumber: number });
   console.log('Added');
 };
 
