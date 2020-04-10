@@ -11,29 +11,28 @@ const knex = require('knex')({
 });
 
 const selectAll = async () => {
-  const data = [];
-  await knex.from('numbers').select()
-    .then(rows => {
-      for (const row of rows) {
-        data[0] = Object.keys(row);
-        data.push([row.phoneNumber, row.firstName, row.lastName]);
-      }
-    });
-  console.log(table(data));
+  const value = await knex.from('numbers').select();
+  drawTable(value);
 };
 
 const numberByName = async () => {
-  const data = [];
   const firstName = readlineSync.question('First name of person? ');
   const lastName = readlineSync.question('Last name of person? ');
-  await knex.from('numbers').select().where('firstName', firstName).andWhere('lastName', lastName)
-    .then(rows => {
-      for (const row of rows) {
-        data[0] = Object.keys(row);
-        data.push([row.phoneNumber, row.firstName, row.lastName]);
-      }
+  const value = await knex.from('numbers').select().where('firstName', firstName).andWhere('lastName', lastName);
+  drawTable(value);
+};
+
+const drawTable = (value) => {
+  if (value.length !== 0) {
+    const data = [];
+    value.forEach(row => {
+      data[0] = Object.keys(row);
+      data.push([row.phoneNumber, row.firstName, row.lastName]);
     });
-  console.log(table(data));
+    console.log(table(data));
+  } else {
+    console.log('Found nothing.');
+  }
 };
 
 const newNumber = async () => {
@@ -66,7 +65,12 @@ const menu = async () => {
     console.log('Goodbye!');
     process.exit();
   } else {
-    await queries[index]();
+    try {
+      await queries[index]();
+    } catch (error) {
+      console.log('Problem with database.');
+      process.exit();
+    }
   }
   const newQuery = readlineSync.keyInYN('Another query?');
   if (newQuery === true) {
