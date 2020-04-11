@@ -25,9 +25,9 @@ const numberByName = async () => {
 const drawTable = (value) => {
   if (value.length !== 0) {
     const data = [];
+    data[0] = Object.keys(value[0]);
     value.forEach(row => {
-      data[0] = Object.keys(row);
-      data.push([row.phoneNumber, row.firstName, row.lastName]);
+      data.push(Object.values(row));
     });
     console.log(table(data));
   } else {
@@ -69,6 +69,7 @@ const menu = async () => {
       await queries[index]();
     } catch (error) {
       console.log('Problem with database.');
+      console.log(error);
       process.exit();
     }
   }
